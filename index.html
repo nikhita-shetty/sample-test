@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAP O2C Credit Management & AI Risk Advisor | KaarTech Portal</title>
+  <meta name="description" content="SAP Order-to-Cash Credit Block Validation & AI Risk Recommendation Dashboard for Laptop Sales Operations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="sap-logo-badge">SAP</div>
+        <div class="header-titles">
+          <h1>Order-to-Cash (O2C) Credit Control Center</h1>
+          <p class="subtitle">Laptop Manufacturing Division &bull; Automated SAP Credit Block & AI Risk Advisor</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="credit-limit-badge" id="globalCreditLimitBadge">
+          <span class="badge-label">Default Credit Limit:</span>
+          <span class="badge-value" id="limitDisplayVal">₹1,50,000</span>
+        </div>
+        <button id="btnResetData" class="btn btn-secondary btn-sm" title="Reset sample SAP data">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset Demo Data
+        </button>
+        <button id="btnExportCSV" class="btn btn-outline btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
+    </header>
+
+    <!-- Executive KPI Dashboard -->
+    <section class="kpi-grid">
+      <div class="kpi-card approved-card">
+        <div class="kpi-icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-title">Total Approved Revenue</span>
+          <h2 class="kpi-value" id="kpiApprovedRev">₹0</h2>
+          <span class="kpi-subtext" id="kpiApprovedCount">0 Orders Released</span>
+        </div>
+      </div>
+
+      <div class="kpi-card blocked-card">
+        <div class="kpi-icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-title">Total Blocked Revenue</span>
+          <h2 class="kpi-value" id="kpiBlockedRev">₹0</h2>
+          <span class="kpi-subtext" id="kpiBlockedCount">0 Orders Blocked</span>
+        </div>
+      </div>
+
+      <div class="kpi-card ratio-card">
+        <div class="kpi-icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-title">Credit Block Ratio</span>
+          <h2 class="kpi-value" id="kpiBlockRatio">0%</h2>
+          <span class="kpi-subtext" id="kpiBlockRatioText">0 of 0 Total Orders</span>
+        </div>
+      </div>
+
+      <div class="kpi-card exposure-card">
+        <div class="kpi-icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-title">Total Risk Exposure</span>
+          <h2 class="kpi-value" id="kpiRiskExposure">₹0</h2>
+          <span class="kpi-subtext">Sum of Outstanding + Blocked</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Workspace Split Grid -->
+    <main class="workspace-grid">
+      <!-- Left Panel: Sales Order Form -->
+      <section class="panel form-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <h2>New Sales Order Entry</h2>
+          </div>
+          <span class="panel-tag">SAP SD Module</span>
+        </div>
+
+        <div class="presets-bar">
+          <span class="presets-label">Quick Scenarios:</span>
+          <button type="button" class="preset-btn" id="presetHighRisk">
+            ⚠️ KaarTech Case (₹1L Due + 50 Laptops)
+          </button>
+          <button type="button" class="preset-btn" id="presetCleanCredit">
+            ✅ Clean Customer (₹20k Due)
+          </button>
+        </div>
+
+        <form id="orderForm" autocomplete="off">
+          <div class="form-group">
+            <label for="custName">Customer Name <span class="req">*</span></label>
+            <input type="text" id="custName" class="form-input" placeholder="e.g. Acme Laptops India Pvt Ltd" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="outstandingDue">Outstanding Unpaid Due (₹) <span class="req">*</span></label>
+              <input type="number" id="outstandingDue" class="form-input" placeholder="100000" min="0" step="1000" required>
+            </div>
+            <div class="form-group">
+              <label for="laptopQty">Order Quantity (Laptops) <span class="req">*</span></label>
+              <input type="number" id="laptopQty" class="form-input" placeholder="50" min="1" step="1" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="unitPrice">Price per Laptop (₹) <span class="req">*</span></label>
+              <input type="number" id="unitPrice" class="form-input" placeholder="2000" min="1" step="100" required>
+            </div>
+            <div class="form-group">
+              <label for="customLimit">Credit Limit Override (₹)</label>
+              <input type="number" id="customLimit" class="form-input" placeholder="150000 (Default)" min="0" step="10000">
+            </div>
+          </div>
+
+          <!-- Realtime Exposure Live Meter -->
+          <div class="live-meter-card" id="liveMeterCard">
+            <div class="meter-header">
+              <span class="meter-title">Live SAP Exposure Check</span>
+              <span class="meter-status-badge" id="meterStatusBadge">Calculating...</span>
+            </div>
+            <div class="meter-metrics">
+              <div><span class="lbl">New Order Value:</span> <strong id="meterOrderVal">₹0</strong></div>
+              <div><span class="lbl">Total Exposure:</span> <strong id="meterExposureVal">₹0</strong></div>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="meterProgressBar"></div>
+            </div>
+            <div class="meter-footer">
+              <span id="meterLimitText">Credit Limit: ₹1,50,000</span>
+              <span id="meterOverLimitText" class="text-danger">Exceeds by ₹0</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Submit Sales Order (SAP Validation)
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Panel: Dashboard Orders Table & AI Recommendations -->
+      <section class="panel dashboard-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <h2>Sales Order Management Dashboard</h2>
+          </div>
+          <div class="table-controls">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search customer or Order ID...">
+            <select id="filterStatus" class="filter-select">
+              <option value="ALL">All Statuses</option>
+              <option value="APPROVED">Approved Only</option>
+              <option value="BLOCKED">Blocked Only</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="table-wrapper">
+          <table class="data-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer Name</th>
+                <th>Outstanding Due</th>
+                <th>Order Details</th>
+                <th>New Order Value</th>
+                <th>Total Exposure</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Dynamically populated via app.js -->
+            </tbody>
+          </table>
+          <div id="emptyTableState" class="empty-state hidden">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            <p>No sales orders found matching your search or filter.</p>
+          </div>
+        </div>
+
+        <!-- AI Risk & Recommendation Engine Section -->
+        <div class="ai-analytics-card">
+          <div class="ai-card-header">
+            <div class="ai-title">
+              <span class="ai-sparkle-icon">✨</span>
+              <h3>SAP AI Risk Advisor & Business Insights</h3>
+            </div>
+            <span class="ai-badge">O2C Recommendation Engine</span>
+          </div>
+
+          <div class="ai-body-grid">
+            <div class="ai-recommendations" id="aiRecommendationsList">
+              <!-- AI Recommendations generated by app.js -->
+            </div>
+            <div class="ai-visual-chart">
+              <div class="chart-header-sm">Credit Risk Breakdown</div>
+              <div class="chart-bars">
+                <div class="chart-item">
+                  <div class="chart-item-lbl">
+                    <span>Approved Revenue</span>
+                    <strong id="chartApprovedLbl">₹0</strong>
+                  </div>
+                  <div class="chart-bar-bg">
+                    <div class="chart-bar-fill bar-approved" id="chartApprovedBar"></div>
+                  </div>
+                </div>
+                <div class="chart-item">
+                  <div class="chart-item-lbl">
+                    <span>Blocked Revenue</span>
+                    <strong id="chartBlockedLbl">₹0</strong>
+                  </div>
+                  <div class="chart-bar-bg">
+                    <div class="chart-bar-fill bar-blocked" id="chartBlockedBar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- SAP Release Block Modal (VKM3 Simulation) -->
+  <div class="modal-overlay hidden" id="releaseModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>SAP VKM3 - Credit Block Release Override</h3>
+        <button class="modal-close" id="btnCloseReleaseModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          You are initiating a manual SAP Credit Override for <strong id="modalCustName">Customer</strong> (Order ID: <code id="modalOrderId">SO-1001</code>).
+        </p>
+        <div class="modal-info-box">
+          <div><span>Total Exposure:</span> <strong id="modalExposure">₹0</strong></div>
+          <div><span>Credit Limit:</span> <strong id="modalLimit">₹1,50,000</strong></div>
+          <div><span>Over-limit Amount:</span> <strong id="modalExcess" class="text-danger">₹0</strong></div>
+        </div>
+        <div class="form-group">
+          <label for="releaseReason">Manager Override Justification <span class="req">*</span></label>
+          <select id="releaseReason" class="form-input">
+            <option value="Bank Guarantee Received">Bank Guarantee Received (LC)</option>
+            <option value="Partial Due Paid by Customer">Partial Due Paid by Customer</option>
+            <option value="Executive Vice President Approval">Executive Vice President Approval</option>
+            <option value="Long Term Enterprise Customer Exception">Long Term Enterprise Customer Exception</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="releaseNotes">Additional Notes / Approver Code</label>
+          <input type="text" id="releaseNotes" class="form-input" placeholder="e.g. Approved under SAP Auth Code CR-REV-901">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="btnCancelRelease">Cancel</button>
+        <button class="btn btn-success" id="btnConfirmRelease">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Authorize SAP Credit Release
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
